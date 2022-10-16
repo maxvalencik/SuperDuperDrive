@@ -8,18 +8,15 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 
+@Service
 public class AuthenticationService implements AuthenticationProvider {
 
     private UserMapper userMapper;
     private HashService hashService;
-
-    public void AuthenticationService(UserMapper userMapper, HashService hashService) {
-        this.userMapper = userMapper;
-        this.hashService = hashService;
-    }
 
     public AuthenticationService(UserMapper userMapper, HashService hashService) {
         this.userMapper = userMapper;
@@ -27,9 +24,9 @@ public class AuthenticationService implements AuthenticationProvider {
     }
 
     @Override
-    public Authentication authenticate(Authentication authentification) throws AuthenticationException {
-        String userName = authentification.getName();
-        String password = authentification.getCredentials().toString();
+    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+        String userName = authentication.getName();
+        String password = authentication.getCredentials().toString();
 
         User user = userMapper.getUser(userName);
         if (user != null) {
@@ -38,9 +35,8 @@ public class AuthenticationService implements AuthenticationProvider {
             if (user.getPassword().equals(hashedPassword)) {
                 return new UsernamePasswordAuthenticationToken(userName, password, new ArrayList<>());
             }
-
-            return null;
         }
+        return null;
     }
 
     @Override
