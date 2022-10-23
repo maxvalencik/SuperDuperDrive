@@ -11,34 +11,20 @@ import org.springframework.boot.test.context.SpringBootTest;
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class NoteTest extends CloudStorageApplicationTests {
-    /**
-     * Test that edits an existing note and verifies that the changes are displayed.
-     */
 
     WebDriver driver;
 
-    @Test
-    public void testDelete() {
-        String noteTitle = "My Note";
-        String noteDescription = "This is my note.";
-        HomeTest homePage = signUpAndLogin();
-        createNote(noteTitle, noteDescription, homePage);
+    private void createNote(String noteTitle, String noteDescription, HomeTest homePage) {
         homePage.navToNotesTab();
-        homePage = new HomeTest(driver);
-        Assertions.assertFalse(homePage.noNotes(driver));
-        deleteNote(homePage);
-        Assertions.assertTrue(homePage.noNotes(driver));
-    }
-
-    private void deleteNote(HomeTest homePage) {
-        homePage.deleteNote();
+        homePage.addNewNote();
+        homePage.setNoteTitle(noteTitle);
+        homePage.setNoteDescription(noteDescription);
+        homePage.saveNoteChanges();
         ResultTest resultPage = new ResultTest(driver);
         resultPage.clickOk();
+        homePage.navToNotesTab();
     }
 
-    /**
-     * Test that creates a note, and verifies it is displayed.
-     */
     @Test
     public void testCreateAndDisplay() {
         String noteTitle = "My Note";
@@ -54,21 +40,38 @@ class NoteTest extends CloudStorageApplicationTests {
         homePage.logout();
     }
 
-    /**
-     * Test that edits an existing note and verifies that the changes are displayed.
-     */
+    private void deleteNote(HomeTest homePage) {
+        homePage.deleteNote();
+        ResultTest resultPage = new ResultTest(driver);
+        resultPage.clickOk();
+    }
+
+    @Test
+    public void testDelete() {
+        String noteTitle = "Personal Note";
+        String noteDescription = "This is a personal note.";
+        HomeTest homePage = signUpAndLogin();
+        createNote(noteTitle, noteDescription, homePage);
+        homePage.navToNotesTab();
+        homePage = new HomeTest(driver);
+        Assertions.assertFalse(homePage.noNotes(driver));
+        deleteNote(homePage);
+        Assertions.assertTrue(homePage.noNotes(driver));
+    }
+
+
     @Test
     public void testModify() {
-        String noteTitle = "My Note";
-        String noteDescription = "This is my note.";
+        String noteTitle = "Personal Note";
+        String noteDescription = "This is a personal note.";
         HomeTest homePage = signUpAndLogin();
         createNote(noteTitle, noteDescription, homePage);
         homePage.navToNotesTab();
         homePage = new HomeTest(driver);
         homePage.editNote();
-        String modifiedNoteTitle = "My Modified Note";
+        String modifiedNoteTitle = " Modified Note";
         homePage.modifyNoteTitle(modifiedNoteTitle);
-        String modifiedNoteDescription = "This is my modified note.";
+        String modifiedNoteDescription = "This is a modified note.";
         homePage.modifyNoteDescription(modifiedNoteDescription);
         homePage.saveNoteChanges();
         ResultTest resultPage = new ResultTest(driver);
@@ -79,14 +82,5 @@ class NoteTest extends CloudStorageApplicationTests {
         Assertions.assertEquals(modifiedNoteDescription, note.getNoteDescription());
     }
 
-    private void createNote(String noteTitle, String noteDescription, HomeTest homePage) {
-        homePage.navToNotesTab();
-        homePage.addNewNote();
-        homePage.setNoteTitle(noteTitle);
-        homePage.setNoteDescription(noteDescription);
-        homePage.saveNoteChanges();
-        ResultTest resultPage = new ResultTest(driver);
-        resultPage.clickOk();
-        homePage.navToNotesTab();
-    }
+
 }

@@ -18,6 +18,9 @@ public class LoginTest {
 
     private final JavascriptExecutor js;
 
+    public void login() {
+        js.executeScript("arguments[0].click();", submitButton);
+    }
     public LoginTest(WebDriver driver) {
         PageFactory.initElements(driver, this);
         js = (JavascriptExecutor) driver;
@@ -31,7 +34,5 @@ public class LoginTest {
         js.executeScript("arguments[0].value='"+ password +"';", inputPassword);
     }
 
-    public void login() {
-        js.executeScript("arguments[0].click();", submitButton);
-    }
+
 }
