@@ -200,6 +200,23 @@ class CloudStorageApplicationTests {
 
 	}
 
+	protected HomeTest signUpAndLogin() {
+		driver.get("http://localhost:" + this.port + "/signup");
+		SignupTest signupPage = new SignupTest(driver);
+		signupPage.setFirstName("MAxime");
+		signupPage.setLastName("Nerea");
+		signupPage.setUserName("Joe");
+		signupPage.setPassword("Mike");
+		signupPage.signUp();
+		driver.get("http://localhost:" + this.port + "/login");
+		LoginTest loginPage = new LoginTest(driver);
+		loginPage.setUserName("lennon");
+		loginPage.setPassword("julia");
+		loginPage.login();
+
+		return new HomeTest(driver);
+	}
+
 
 
 }
